@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Process Scheduler</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="p-4 bg-light">
+    <!-- Case 1 -->
+    <div class="container" id="case1">
+      <h2 class="mb-4">🧠 Basic Process Scheduler (Case 1)</h2>
+
+      <form id="scheduler-form-case1">
+        <table class="table table-bordered" id="process-table-case1">
+          <thead class="table-dark">
+            <tr>
+              <th>PID</th>
+              <th>Arrival Time</th>
+              <th>Burst Time</th>
+            </tr>
+          </thead>
+          <tbody id="process-body-case1"></tbody>
+        </table>
+
+        <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="addProcess('case1')"
+          >
+            Add Process
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning"
+            onclick="deleteLast('case1')"
+          >
+            Delete Last
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            onclick="clearAll('case1')"
+          >
+            Clear All
+          </button>
+        </div>
+
+        <div class="mb-3">
+          <label for="algorithm-case1" class="form-label"
+            >Select Scheduling Algorithm:</label
+          >
+          <select class="form-select" id="algorithm-case1">
+            <option value="fcfs">FCFS</option>
+            <option value="sjf">SJF</option>
+            <option value="round_robin">Round Robin</option>
+          </select>
+        </div>
+
+        <div class="mb-3" id="quantum-div-case1" style="display: none">
+          <label for="quantum-case1" class="form-label"
+            >Quantum Time (for Round Robin):</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="quantum-case1"
+            value="4"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-success">Run Scheduler</button>
+      </form>
+
+      <hr />
+      <div id="output-case1" class="mt-4"></div>
+    </div>
+
+    <!-- Case 2 -->
+    <div class="container" id="case2">
+      <h2 class="mb-4">🧠 AI-Powered Process Scheduler (Case 2)</h2>
+
+      <form id="scheduler-form-case2">
+        <table class="table table-bordered" id="process-table-case2">
+          <thead class="table-dark">
+            <tr>
+              <th>PID</th>
+              <th>Arrival Time</th>
+              <th>IO Write Bytes</th>
+              <th>Context Switches (Voluntary)</th>
+              <th>CPU Percent</th>
+              <th>IO Read Bytes</th>
+              <th>IO Read Count</th>
+              <th>IO Write Count</th>
+            </tr>
+          </thead>
+          <tbody id="process-body-case2"></tbody>
+        </table>
+
+        <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="addProcess('case2')"
+          >
+            Add Process
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning"
+            onclick="deleteLast('case2')"
+          >
+            Delete Last
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            onclick="clearAll('case2')"
+          >
+            Clear All
+          </button>
+        </div>
+
+        <div class="mb-3">
+          <label for="algorithm-case2" class="form-label"
+            >Select Scheduling Algorithm:</label
+          >
+          <select class="form-select" id="algorithm-case2">
+            <!-- <option value="fcfs">FCFS</option> -->
+            <!-- <option value="sjf">SJF</option> -->
+            <option value="rl">Reinforcement Learning</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Run Scheduler</button>
+      </form>
+
+      <hr />
+      <div id="output-case2" class="mt-4"></div>
+    </div>
+
+    <script>
+      // Shared helper functions to add, delete and clear processes for Case 1 and Case 2
+      let processCountCase1 = 0;
+      let processCountCase2 = 0;
+
+      function addProcess(caseType) {
+        const tbody = document.getElementById(`process-body-${caseType}`);
+        const row = document.createElement("tr");
+        if (caseType === "case1") {
+          row.innerHTML = `
+                    <td>P${processCountCase1 + 1}</td>
+                    <td><input type="number" class="form-control" name="arrival_time" required></td>
+                    <td><input type="number" class="form-control" name="burst_time" required></td>
+                `;
+          processCountCase1++;
+        } else {
+          row.innerHTML = `
+                    <td>P${processCountCase2 + 1}</td>
+                    <td><input type="number" class="form-control" name="arrival_time" required></td>
+                    <td><input type="number" class="form-control" name="io_write_bytes" required></td>
+                    <td><input type="number" class="form-control" name="num_ctx_switches_voluntary" required></td>
+                    <td><input type="number" class="form-control" name="cpu_percent" required></td>
+                    <td><input type="number" class="form-control" name="io_read_bytes" required></td>
+                    <td><input type="number" class="form-control" name="io_read_count" required></td>
+                    <td><input type="number" class="form-control" name="io_write_count" required></td>
+                `;
+          processCountCase2++;
+        }
+        tbody.appendChild(row);
+      }
+
+      function deleteLast(caseType) {
+        const tbody = document.getElementById(`process-body-${caseType}`);
+        if (tbody.lastChild) {
+          tbody.removeChild(tbody.lastChild);
+          if (caseType === "case1") {
+            processCountCase1--;
+          } else {
+            processCountCase2--;
+          }
+        }
+      }
+
+      function clearAll(caseType) {
+        document.getElementById(`process-body-${caseType}`).innerHTML = "";
+        if (caseType === "case1") {
+          processCountCase1 = 0;
+        } else {
+          processCountCase2 = 0;
+        }
+      }
+
+      // Case 1 Scheduler form submission
+      document
+        .getElementById("scheduler-form-case1")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const processes = gatherProcessData("case1");
+
+          // ❗ Check if no process is added
+          if (processes.length === 0) {
+            const outputDiv = document.getElementById("output-case1");
+            outputDiv.innerHTML =
+              "<p class='text-danger'>⚠️ Please add at least one process before running the scheduler.</p>";
+            return;
+          }
+
+          const algorithm = document.getElementById("algorithm-case1").value;
+          const quantum = document.getElementById("quantum-case1")?.value || 4;
+          let result;
+
+          if (algorithm === "fcfs") {
+            result = fcfs(processes);
+          } else if (algorithm === "sjf") {
+            result = sjf(processes);
+          } else if (algorithm === "round_robin") {
+            result = roundRobin(processes, quantum);
+          }
+
+          displayOutput(result, "case1");
+        });
+
+      // Case 2 Scheduler form submission with Backend Request
+      document
+        .getElementById("scheduler-form-case2")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const processes = gatherProcessData("case2");
+          const algorithm = document.getElementById("algorithm-case2").value;
+          const res = await fetch("/schedule", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ processes, algorithm }),
+          });
+          const data = await res.json();
+          displayOutput(data, "case2");
+        });
+
+      // Helper function to gather process data
+      function gatherProcessData(caseType) {
+        const rows = document.querySelectorAll(`#process-body-${caseType} tr`);
+        const processes = [];
+        rows.forEach((row, index) => {
+          const inputs = row.querySelectorAll("input");
+          const values = Array.from(inputs).map((input) =>
+            parseFloat(input.value)
+          );
+          if (caseType === "case1") {
+            processes.push({
+              pid: `P${index + 1}`,
+              arrival_time: values[0],
+              burst_time: values[1],
+            });
+          } else {
+            processes.push({
+              pid: `P${index + 1}`,
+              arrival_time: values[0],
+              io_write_bytes: values[1],
+              num_ctx_switches_voluntary: values[2],
+              cpu_percent: values[3],
+              io_read_bytes: values[4],
+              io_read_count: values[5],
+              io_write_count: values[6],
+            });
+          }
+        });
+        return processes;
+      }
+
+      // Function to display the results in the UI
+      function displayOutput(data, caseType) {
+        const outputDiv = document.getElementById(`output-${caseType}`);
+        if (!data.schedule) {
+          outputDiv.innerHTML =
+            "<p class='text-danger'>No output received.</p>";
+          return;
+        }
+        let table = `
+                <h4>📊 Scheduling Output</h4>
+                <table class="table table-bordered">
+                    <thead><tr>
+                        <th>PID</th><th>AT</th><th>BT</th><th>CT</th><th>TAT</th><th>WT</th>
+                    </tr></thead><tbody>
+            `;
+        data.schedule.forEach((proc) => {
+          table += `
+                    <tr>
+                        <td>${proc.pid}</td>
+                        <td>${proc.arrival_time}</td>
+                        <td>${proc.burst_time}</td>
+                        <td>${proc.completion_time}</td>
+                        <td>${proc.turnaround_time}</td>
+                        <td>${proc.waiting_time}</td>
+                    </tr>
+                `;
+        });
+        table += `</tbody></table>`;
+        table += `
+                <h5>📈 Performance Metrics</h5>
+                <ul>
+                    <li><strong>Average Waiting Time:</strong> ${data.avg_waiting_time}</li>
+                    <li><strong>Average Turnaround Time:</strong> ${data.avg_turnaround_time}</li>
+                    <li><strong>Average Completion Time:</strong> ${data.avg_completion_time}</li>
+                    <li><strong>Throughput:</strong> ${data.throughput} processes/unit time</li>
+                    <li><strong>CPU Utilization:</strong> ${data.cpu_utilization}</li>
+                </ul>
+            `;
+        outputDiv.innerHTML = table;
+      }
+
+      // Scheduling Algorithms
+
+      function fcfs(processes) {
+        let time = 0;
+        let avg_waiting_time = 0;
+        let avg_turnaround_time = 0;
+        let total_burst_time = 0;
+
+        processes.forEach((process) => {
+          process.completion_time = time + process.burst_time;
+          process.turnaround_time =
+            process.completion_time - process.arrival_time;
+          process.waiting_time = process.turnaround_time - process.burst_time;
+
+          avg_waiting_time += process.waiting_time;
+          avg_turnaround_time += process.turnaround_time;
+          total_burst_time += process.burst_time;
+
+          time += process.burst_time;
+        });
+
+        const total_processes = processes.length;
+        const throughput = total_processes / time;
+        const cpu_utilization = (total_burst_time / time) * 100;
+
+        return {
+          schedule: processes,
+          avg_waiting_time: (avg_waiting_time / total_processes).toFixed(2),
+          avg_turnaround_time: (avg_turnaround_time / total_processes).toFixed(
+            2
+          ),
+          avg_completion_time: (total_burst_time / total_processes).toFixed(2),
+          throughput: throughput.toFixed(2),
+          cpu_utilization: cpu_utilization.toFixed(2),
+        };
+      }
+
+      function sjf(processes) {
+        processes.sort((a, b) => a.burst_time - b.burst_time);
+
+        let time = 0;
+        let avg_waiting_time = 0;
+        let avg_turnaround_time = 0;
+        let total_burst_time = 0;
+
+        processes.forEach((process) => {
+          process.completion_time = time + process.burst_time;
+          process.turnaround_time =
+            process.completion_time - process.arrival_time;
+          process.waiting_time = process.turnaround_time - process.burst_time;
+
+          avg_waiting_time += process.waiting_time;
+          avg_turnaround_time += process.turnaround_time;
+          total_burst_time += process.burst_time;
+
+          time += process.burst_time;
+        });
+
+        const total_processes = processes.length;
+        const throughput = total_processes / time;
+        const cpu_utilization = (total_burst_time / time) * 100;
+
+        return {
+          schedule: processes,
+          avg_waiting_time: (avg_waiting_time / total_processes).toFixed(2),
+          avg_turnaround_time: (avg_turnaround_time / total_processes).toFixed(
+            2
+          ),
+          avg_completion_time: (total_burst_time / total_processes).toFixed(2),
+          throughput: throughput.toFixed(2),
+          cpu_utilization: cpu_utilization.toFixed(2),
+        };
+      }
+
+      function roundRobin(processes, quantum) {
+        let time = 0;
+        let avg_waiting_time = 0;
+        let avg_turnaround_time = 0;
+        let total_burst_time = 0;
+
+        let queue = [...processes];
+        let remaining_burst_time = processes.map((p) => p.burst_time);
+
+        while (queue.length > 0) {
+          const process = queue.shift();
+          const burst_time = remaining_burst_time.shift();
+
+          if (burst_time > quantum) {
+            remaining_burst_time.push(burst_time - quantum);
+            queue.push(process);
+            time += quantum;
+          } else {
+            time += burst_time;
+            process.completion_time = time;
+            process.turnaround_time =
+              process.completion_time - process.arrival_time;
+            process.waiting_time = process.turnaround_time - process.burst_time;
+
+            avg_waiting_time += process.waiting_time;
+            avg_turnaround_time += process.turnaround_time;
+            total_burst_time += process.burst_time;
+          }
+        }
+
+        const total_processes = processes.length;
+        const throughput = total_processes / time;
+        const cpu_utilization = (total_burst_time / time) * 100;
+
+        return {
+          schedule: processes,
+          avg_waiting_time: (avg_waiting_time / total_processes).toFixed(2),
+          avg_turnaround_time: (avg_turnaround_time / total_processes).toFixed(
+            2
+          ),
+          avg_completion_time: (total_burst_time / total_processes).toFixed(2),
+          throughput: throughput.toFixed(2),
+          cpu_utilization: cpu_utilization.toFixed(2),
+        };
+      }
+    </script>
+  </body>
+</html>
